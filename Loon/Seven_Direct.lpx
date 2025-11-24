@@ -1,0 +1,34 @@
+# 
+# Author: slpseven
+# Date: 2025-11-24 19:38:50
+# LastEditors: slpseven
+# LastEditTime: 2025-11-24 20:43:21
+# Description:  
+# Copyright (c) 2025 by slpseven, All Rights Reserved. 
+# 
+[Rule]
+DOMAIN-SUFFIX,kelee.one,DIRECT
+DOMAIN-SUFFIX,iconfinder.com,DIRECT
+DOMAIN-SUFFIX, xvideos-cdn.com,DIRECT
+DOMAIN,apis.bilin.eu.org,DIRECT
+DOMAIN-SUFFIX,procurs.us,DIRECT
+DOMAIN-SUFFIX,thebigboss.org,DIRECT
+DOMAIN-SUFFIX,limneos.net,DIRECT
+DOMAIN-SUFFIX,ellekit.space,DIRECT
+DOMAIN-SUFFIX,creaturecoding.com,DIRECT
+DOMAIN-SUFFIX,ellekit.space,DIRECT
+DOMAIN-SUFFIX,getsileo.app,DIRECT
+DOMAIN-SUFFIX,canister.me,DIRECT
+DOMAIN-SUFFIX,gitlab.io,DIRECT
+DOMAIN-SUFFIX,miro92.com,DIRECT
+DOMAIN-SUFFIX,ichitaso.com,DIRECT
+DOMAIN-SUFFIX,iosjb.top,DIRECT
+DOMAIN,api.follow.is,DIRECT
+DOMAIN-SUFFIX,bestblogs.dev,DIRECT
+DOMAIN-SUFFIX,posthog.com,DIRECT
+DOMAIN-SUFFIX,ip-api.com,DIRECT
+DOMAIN-SUFFIX,v2rayshare.com,DIRECT
+DOMAIN-SUFFIX,v2rayshare.net,DIRECT
+DOMAIN-SUFFIX,jsdelivr.net,DIRECT
+DOMAIN-SUFFIX,jsdelivr.com,DIRECT
+DOMAIN,receiptcheck.quantumult.app,DIRECT
