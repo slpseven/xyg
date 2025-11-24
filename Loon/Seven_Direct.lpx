@@ -1,12 +1,13 @@
-# 
+# /
 # Author: slpseven
 # Date: 2025-11-24 19:38:50
 # LastEditors: slpseven
-# LastEditTime: 2025-11-24 20:43:21
+# LastEditTime: 2025-11-24 21:54:02
 # Description:  
 # Copyright (c) 2025 by slpseven, All Rights Reserved. 
 # 
 [Rule]
+DOMAIN,proxy.api.030101.xyz,DIRECT
 DOMAIN-SUFFIX,kelee.one,DIRECT
 DOMAIN-SUFFIX,iconfinder.com,DIRECT
 DOMAIN-SUFFIX, xvideos-cdn.com,DIRECT
