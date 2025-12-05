@@ -2,7 +2,7 @@
 # Author: slpseven
 # Date: 2025-11-24 19:38:59
 # LastEditors: slpseven
-# LastEditTime: 2025-11-24 19:48:30
+# LastEditTime: 2025-12-05 08:50:46
 # Description:  
 # Copyright (c) 2025 by slpseven, All Rights Reserved. 
 # 
@@ -21,4 +21,3 @@ DOMAIN-SUFFIX,cdn-telegram.org,PROXY
 DOMAIN,u.expo.dev,PROXY
 DOMAIN,webp.follow.is,PROXY
 DOMAIN-SUFFIX,rsshub.app,PROXY
-DOMAIN,sub-store.vercel.app,PROXY
