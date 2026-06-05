@@ -1,0 +1,454 @@
+# ==================================================================
+# 完全使用YAML配置 , 不使用GUI设置
+# GUIGUI 只做：查看日志、查看连接、测速
+# ==================================================================
+
+
+# ==================================================================
+# Clash party 基础配置
+# 开启混合端口，支持HTTP、SOCKS5和透明代理
+# 允许局域网连接
+# 监听所有网卡地址
+# 设置代理模式为规则模式
+# 日志级别为信息级别
+# 禁用IPv6
+# 统一延迟，适用于所有代理
+# TCP连接并发处理
+# 伪装指纹为Chrome浏览器
+# profile持久化，保存用户选择的代理和伪装IP设置
+# ==================================================================
+
+mixed-port: 7890
+# allow-lan: true
+allow-lan: false
+# bind-address: "*"
+bind-address: 127.0.0.1
+mode: rule
+log-level: error
+ipv6: false
+unified-delay: true
+tcp-concurrent: true
+global-client-fingerprint: chrome
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+
+# ==================================================================
+# Tun模式配置
+# 开启 Tun 模式接管系统网络流量
+# Tun 协议栈使用混合模式
+# DNS 劫持所有53端口的DNS请求，确保DNS请求也能被Clash处理
+# 自动添加系统路由，确保所有流量都能被Tun接管
+# 自动检测当前网络接口，适应不同的网络环境
+# 严格路由模式，确保只有符合规则的流量才会被代理，其他流量直接连接
+# ==================================================================
+
+tun:
+  enable: true
+  stack: mixed
+  dns-hijack:
+    - any:53
+  auto-route: true
+  auto-detect-interface: true
+  strict-route: true
+
+
+# ==================================================================
+# Sniffer 流量嗅探配置
+# 开启流量嗅探功能，自动识别HTTP、TLS和QUIC协议
+# 解析纯IP流量，确保即使没有域名信息的流量也能被正确处理
+# 定义嗅探规则，指定常见协议的默认端口
+# 嗅探结果不覆盖原始目的地，确保流量能够正确路由
+# ==================================================================
+
+sniffer:
+  enable: true
+  parse-pure-ip: true
+  sniff:
+    TLS:
+      ports:
+        - 443
+        - 8443
+    HTTP:
+      ports:
+        - 80
+        - 8080
+    QUIC:
+      ports:
+        - 443
+        - 8443
+  override-destination: false
+
+
+# ==================================================================
+# DNS 配置
+# 开启 DNS 功能
+# 禁用 IPv6 避免IPv6泄漏
+# 使用Fake-IP增强模式，确保DNS请求能够被Clash处理并返回伪装IP地址
+# 确保DNS请求按照规则进行处理
+# 监听本地地址和端口，供系统DNS使用
+# 定义Fake-IP地址范围，确保返回的伪装IP地址不会与真实IP地址冲突
+# 定义Fake-IP过滤规则，指定哪些域名不使用Fake-IP，直接返回真实IP地址
+# 定义默认DNS服务器，供Clash使用
+# 定义代理服务器DNS服务器，供Clash在使用代理时使用
+# 定义自定义DNS服务器，供Clash使用
+# ==================================================================
+
+dns:
+  enable: true
+  ipv6: false
+  enhanced-mode: fake-ip
+  respect-rules: true
+  listen: 127.0.0.1:1053
+
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - "*.lan"
+    - "*.local"
+
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+
+  proxy-server-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+
+  nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+
+# ==================================================================
+# 代理组配置
+# 定义多个代理组，满足不同的使用场景和需求
+# ==================================================================
+
+proxy-groups:
+
+  # 主代理
+  - name: 节点选择
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Proxy.png
+    type: select
+    proxies:
+      - 自动选择
+      - DIRECT
+    include-all: true
+
+  # 自动测速
+  - name: 自动选择
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Auto.png
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 200
+    include-all: true
+
+  # AI
+  - name: AI
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Bot.png
+    type: select
+    proxies:
+      - 自动选择
+      - 节点选择
+
+  # Apple
+  - name: Apple
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Apple.png
+    type: select
+    proxies:
+      - DIRECT
+      - 自动选择
+
+  # Telegram
+  - name: Telegram
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Telegram.png
+    type: select
+    proxies:
+      - 自动选择
+      - 节点选择
+
+  # Google
+  - name: Google
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Google_Search.png
+    type: select
+    proxies:
+      - 自动选择
+      - 节点选择
+
+  # GitHub
+  - name: GitHub
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/GitHub.png
+    type: select
+    proxies:
+      - 自动选择
+      - 节点选择
+      - DIRECT
+
+  # 国内服务
+  - name: 国内服务
+    icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/Direct.png
+    type: select
+    proxies:
+      - DIRECT
+      - 节点选择
+
+  # 漏网之鱼
+  - name: 漏网之鱼
+    icon: https://testingcf.jsdelivr.net/gh/Koolson/Qure@master/IconSet/Color/Final.png
+    type: select
+    proxies:
+      - 自动选择
+      - 节点选择
+      - DIRECT
+
+# ==================================================================
+# 规则配置
+# Loyalsoldier 负责基础规则
+# blackmatrix7 负责专项规则
+# ==================================================================
+
+rule-providers:
+
+  # Loyalsoldier 基础规则
+  private:
+    type: http
+    behavior: domain
+    path: ./ruleset/loyalsoldier/private.yaml
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/private.txt
+    interval: 86400
+
+  reject:
+    type: http
+    behavior: domain
+    path: ./ruleset/loyalsoldier/reject.yaml
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/reject.txt
+    interval: 86400
+
+  direct:
+    type: http
+    behavior: domain
+    path: ./ruleset/loyalsoldier/direct.yaml
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/direct.txt
+    interval: 86400
+
+  proxy:
+    type: http
+    behavior: domain
+    path: ./ruleset/loyalsoldier/proxy.yaml
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/proxy.txt
+    interval: 86400
+
+  cncidr:
+    type: http
+    behavior: ipcidr
+    path: ./ruleset/loyalsoldier/cncidr.yaml
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/cncidr.txt
+    interval: 86400
+
+  lancidr:
+    type: http
+    behavior: ipcidr
+    path: ./ruleset/loyalsoldier/lancidr.yaml
+    url: https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/lancidr.txt
+    interval: 86400
+
+  # blackmatrix7 专项规则
+  apple:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/apple.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml
+    interval: 86400
+
+  alipay:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/alipay.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AliPay/AliPay.yaml
+    interval: 86400
+
+  alibaba:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/alibaba.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Alibaba/Alibaba.yaml
+    interval: 86400
+
+  bilibili:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/bilibili.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.yaml
+    interval: 86400
+
+  bing:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/bing.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Bing/Bing.yaml
+    interval: 86400
+
+  bytedance:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/bytedance.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ByteDance/ByteDance.yaml
+    interval: 86400
+
+  discord:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/discord.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Discord/Discord.yaml
+    interval: 86400
+
+  gemini:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/gemini.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Gemini/Gemini.yaml
+    interval: 86400
+
+  github:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/github.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.yaml
+    interval: 86400
+
+  google:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/google.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml
+    interval: 86400
+
+  jingdong:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/jingdong.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/JingDong/JingDong.yaml
+    interval: 86400
+
+  kugoukuwo:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/kugoukuwo.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/KugouKuwo/KugouKuwo.yaml
+    interval: 86400
+
+  microsoft:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/microsoft.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml
+    interval: 86400
+
+  notion:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/notion.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Notion/Notion.yaml
+    interval: 86400
+
+  openai:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/openai.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.yaml
+    interval: 86400
+
+  telegram:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/telegram.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.yaml
+    interval: 86400
+
+  tencent:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/tencent.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Tencent/Tencent.yaml
+    interval: 86400
+
+  wechat:
+    type: http
+    behavior: classical
+    path: ./ruleset/blackmatrix7/wechat.yaml
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/WeChat/WeChat.yaml
+    interval: 86400
+
+# ==================================================================
+# 规则配置
+# ==================================================================
+rules: 
+
+  - RULE-SET,reject,REJECT
+
+  - RULE-SET,alipay,国内服务
+  - RULE-SET,alibaba,国内服务
+  - RULE-SET,bilibili,国内服务
+  - RULE-SET,bytedance,国内服务
+  - RULE-SET,jingdong,国内服务
+  - RULE-SET,kugoukuwo,国内服务
+  - RULE-SET,tencent,国内服务
+  - RULE-SET,wechat,国内服务
+  - RULE-SET,apple,Apple
+  - RULE-SET,openai,AI
+  - RULE-SET,gemini,AI
+  - RULE-SET,telegram,Telegram
+  - RULE-SET,github,GitHub
+  - RULE-SET,google,Google
+
+  # - DOMAIN-SUFFIX,esm.run,DIRECT
+  # - DOMAIN-SUFFIX,jsdelivr.com,DIRECT
+  # - DOMAIN-SUFFIX,jsdelivr.net,DIRECT
+  # - DOMAIN-SUFFIX,kaspersky-labs.com,DIRECT
+  # - DOMAIN-SUFFIX,kaspersky.com,DIRECT
+  # - DOMAIN-SUFFIX,poki.io,DIRECT
+  # - DOMAIN-SUFFIX,poki.com,DIRECT
+  # - DOMAIN-SUFFIX,poki-cdn.com,DIRECT
+  # - DOMAIN-SUFFIX,retrogames.games,DIRECT
+  # - DOMAIN-SUFFIX,magiskcn.com,DIRECT
+  # - DOMAIN-SUFFIX,miuiver.com,DIRECT
+  # - DOMAIN-SUFFIX,miuier.com,DIRECT
+  # - DOMAIN-SUFFIX,syncthing.net,DIRECT
+  # - DOMAIN-SUFFIX,v2rayshare.net,DIRECT
+  # - DOMAIN-SUFFIX,picsum.photos,DIRECT
+  # - DOMAIN-SUFFIX,030101.xyz,DIRECT
+  # - DOMAIN-SUFFIX,gitlab.com,DIRECT
+  # - DOMAIN-SUFFIX,crontab.guru,DIRECT
+  # - DOMAIN-SUFFIX,ihsiao.com,DIRECT
+  # - DOMAIN-SUFFIX,pkmer.net,DIRECT
+  # - DOMAIN-SUFFIX,pkmer.cn,DIRECT
+  # - DOMAIN-SUFFIX,obsidian.md,DIRECT
+  # - DOMAIN-SUFFIX,obsidian.vip,DIRECT
+  # - DOMAIN-SUFFIX,hf-mirror.com,DIRECT
+  # - DOMAIN-SUFFIX,ollama.com,DIRECT
+  # - DOMAIN-SUFFIX,ollama.ai,DIRECT
+  # - DOMAIN-SUFFIX,cloudflarestorage.com,DIRECT
+  # - DOMAIN-SUFFIX,fastly.net,DIRECT
+  # - DOMAIN-SUFFIX,cbsi.com,DIRECT
+  # - DOMAIN-SUFFIX,audioscrobbler.com,DIRECT
+  # - DOMAIN-SUFFIX,musicbrainz.org,DIRECT
+  # - DOMAIN-SUFFIX,lmstudio.ai,DIRECT
+  # - DOMAIN-SUFFIX,iopq.net,DIRECT
+  # - DOMAIN-SUFFIX,anythingllm.com,DIRECT
+  # - DOMAIN,flac.music.hi.cn,自动选择
+
+  # - DOMAIN-SUFFIX,gh-proxy.org,自动选择
+  # - DOMAIN-SUFFIX,ghfast.top,自动选择
+  # - DOMAIN-SUFFIX,down.clashparty.org,自动选择
+
+  - RULE-SET,private,DIRECT
+  - RULE-SET,direct,DIRECT
+  - RULE-SET,proxy,自动选择
+
+  - RULE-SET,lancidr,DIRECT
+  - RULE-SET,cncidr,DIRECT
+  - GEOIP,LAN,DIRECT
+  - GEOIP,CN,DIRECT
+
+  - MATCH,漏网之鱼
